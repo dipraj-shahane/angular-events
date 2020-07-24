@@ -1,0 +1,31 @@
+<div>
+    <h2>Create User</h2>
+    <hr>
+    <div class="col-md-4">
+        <form [formGroup]="createUserForm" (ngSubmit)="createUser(createUserForm.value)" autocomplete="off" novalidate>
+            <div class="form-group" [ngClass]="{'error': !validateUsername() }">
+                <label for="username">Username:</label>
+                <em *ngIf="!validateUsername()">Required</em>
+                <input id="username" formControlName="username" type="text" class="form-control"
+                    placeholder="Username..." />
+            </div>
+            <div class="form-group" [ngClass]="{'error': !validateFirstName() }">
+                <label for="firstName">First Name:</label>
+                <em *ngIf="!validateFirstName() && firstName.errors.required">Required</em>
+                <em *ngIf="!validateFirstName() && firstName.errors.pattern">Must start with a
+                    letter.</em>
+                <input formControlName="firstName" id="firstName" type="text" class="form-control"
+                    placeholder="First Name..." />
+            </div>
+            <div class="form-group" [ngClass]="{'error': !validateLastName() }">
+                <label for="lastName">Last Name:</label>
+                <em *ngIf="!validateLastName()">Required</em>
+                <input id="lastName" formControlName="lastName" type="text" class="form-control"
+                    placeholder="Last Name..." />
+            </div>
+
+            <button type="submit" [disabled]="createUserForm.invalid" class="btn btn-primary">Save</button>
+            <button type="button" (click)="cancel()" class="btn btn-default">Cancel</button>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,76 @@
+<div class="container">
+    <img [src]="event?.imageUrl" [alt]="event?.name" class="event-image">
+
+    <div class="row">
+        <div class="col-md-8">
+            <h2>{{event?.name | uppercase}}</h2>
+        </div>
+        <div *ngIf="auth.isAuthenticated()" class="col-md-2">
+            <button type="button" class="btn btn-sm btn-danger btn-custom"
+                [routerLink]="['/events/edit', event.id]">Edit
+                {{event?.name | uppercase}}</button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div><strong>Date:</strong> {{event?.date | date: 'fullDate'}}</div>
+            <div><strong>Time:</strong> {{event?.time}}</div>
+            <div [ngStyle]="getStartTimeStyle()" [ngSwitch]="event?.time">
+                <strong>Time: {{event.time}}
+                    <span *ngSwitchCase="'8:00 am'">(Early Start)</span>
+                    <span *ngSwitchCase="'10:00 am'">(Late Start)</span>
+                    <span *ngSwitchDefault>(Normal Start)</span></strong>
+            </div>
+            <div><strong>Price:</strong> {{event?.price | currency:'INR'}}</div>
+        </div>
+        <div class="col-md-6">
+            <address *ngIf="event?.location">
+                <strong>Address:</strong><br />
+                {{event?.location?.address}}<br />
+                {{event?.location?.city}}, {{event?.location?.country}}
+            </address>
+            <span *ngIf="event?.onlineUrl">
+                Online URL: <a href="event?.onlineUrl" class="onlineUrlLink">{{event?.onlineUrl}}</a>
+            </span>
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="row">
+        <div class="col-md-2">
+            <h3 style="margin:0">Sessoins</h3>
+        </div>
+        <div class="col-md-6" style="margin-bottom: 10px;">
+            <div class="btn-group btn-group-sm" style="margin: 0 50px 0 0;">
+                <button [disabled]="addMode" class="btn btn-sort" [class.active]="sortBy==='name'"
+                    (click)="sortBy='name'">By
+                    Name</button>
+                <button [disabled]="addMode" class="btn btn-sort" [class.active]="sortBy==='votes'"
+                    (click)="sortBy='votes'" title="To vote, please Login..">By
+                    Votes</button>
+            </div>
+            <div class="btn-group btn-group-sm">
+                <button [disabled]="addMode" class="btn btn-filter" [class.active]="filterBy==='all'"
+                    (click)="filterBy = 'all'">All</button>
+                <button [disabled]="addMode" class="btn btn-filter" [class.active]="filterBy==='beginner'"
+                    (click)="filterBy='beginner'">Beginner</button>
+                <button [disabled]="addMode" class="btn btn-filter" [class.active]="filterBy==='intermediate'"
+                    (click)="filterBy='intermediate'">Intermediate</button>
+                <button [disabled]="addMode" class="btn btn-filter" [class.active]="filterBy==='advanced'"
+                    (click)="filterBy='advanced'">Advanced</button>
+            </div>
+        </div>
+
+        <div *ngIf="auth.isAuthenticated()" class="col-md-2">
+            <button type="button" class="btn btn-sm btn-success btn-custom" (click)="addSession()">Add Session</button>
+        </div>
+    </div>
+
+    <session-list *ngIf="!addMode" [eventId]="event?.id" [filterByProp]="filterBy" [sortByProp]="sortBy"
+        [sessions]="event?.sessions">
+    </session-list>
+    <create-session *ngIf="addMode" (saveNewSession)="handleSaveNewSession($event)"
+        (cancelAddSession)="handleCancelAddSession()"></create-session>
+</div>
